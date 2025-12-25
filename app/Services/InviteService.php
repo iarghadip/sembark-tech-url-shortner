@@ -25,7 +25,7 @@ class InviteService
         return Company::find($id);
     }
     
-    public function validateSender(User $user, $id)
+    public function validateSender($user, $id)
     {
         if ($id === 'new' && !$user->can('can-see-all-org')) {
             return 'User is not authorized to create company.';
@@ -38,7 +38,7 @@ class InviteService
         return null;
     }
     
-    public function validateReceiver(User $user, Company $company, $sendInviteMode)
+    public function validateReceiver($user, $company, $sendInviteMode)
     {
         if (!$user) {
             return 'User was not found in our records.';
