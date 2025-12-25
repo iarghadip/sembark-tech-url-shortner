@@ -26,12 +26,18 @@
             <label class="block mb-1">Company</label>
             <select name="company_id" class="w-full border p-2 rounded mb-2" id="company-id">
                 <option value="">-- Select Company --</option>
+                
                 @foreach($companies as $company)
-                    <option value="{{ $company->id }}" data-user-count="{{ $company->users->count() }}" {{ old('company_id') == $company->id ? 'selected' : '' }}>
-                        {{ $company->name }}
-                    </option>
+                <option value="{{ $company->id }}"
+                    data-user-count="{{ $company->users->count() }}"
+                    {{ old('company_id') == $company->id ? 'selected' : '' }}>
+                    {{ $company->name }}
+                </option>
                 @endforeach
+                
+                @if($can_see_all)
                 <option value="new" data-user-count="0">+ Create New Company</option>
+                @endif
             </select>
             <input type="text" name="company_name" id="company-name" class="w-full border p-2 rounded mt-2 hidden" placeholder="Enter new company name">
             @error('company_id')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
@@ -51,7 +57,7 @@
                 <span class="ml-2">Make user an admin</span>
             </label>
         </div>
-
+        
         <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
             Send Invite
         </button>

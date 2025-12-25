@@ -23,9 +23,10 @@ class RolePermissionSeeder extends Seeder
             'can-send-invite',
             'can-accept-invite',
             'can-short-url',
-            'can-see-all-data',
-            'can-see-com-data',
-            'can-see-self-data',
+            'can-see-all-org',
+            'can-see-self-org',
+            'can-see-all-url',
+            'can-see-self-url'
         ];
 
         // added the web guard
@@ -44,22 +45,22 @@ class RolePermissionSeeder extends Seeder
 
         $superAdminRole->givePermissionTo([
             'can-send-invite',
-            'can-see-com-data',
-            'can-see-all-data'
+            'can-see-all-org',
+            'can-see-all-url'
         ]);
 
         $adminRole->givePermissionTo([
             'can-send-invite',
             'can-accept-invite',
             'can-short-url',
-            'can-see-com-data',
-            'can-see-self-data'
+            'can-see-self-org',
+            'can-see-self-url'
         ]);
 
         $memberRole->givePermissionTo([
             'can-accept-invite',
             'can-short-url',
-            'can-see-self-data'
+            'can-see-self-url'
         ]);
 
         $superAdmin = User::create([

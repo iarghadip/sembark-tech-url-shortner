@@ -32,7 +32,20 @@ class InviteService
         return Company::find($id);
     }
     
-    public function validateRequest(User $user, Company $company, $sendInviteMode)
+    public function validateSender(User $user, $id)
+    {
+        if ($id === 'new' && !$user->can('can-see-all-org')) {
+            return 'User is not authorized to create company.';
+        }
+        
+        if (!$user->can('can-send-invite')) {
+            return 'User is not authorized to send invite.';
+        }
+        
+        return null;
+    }
+    
+    public function validateReceiver(User $user, Company $company, $sendInviteMode)
     {
         if (!$user) {
             return 'User was not found in our records.';
@@ -42,8 +55,8 @@ class InviteService
             return 'User company was not found in our records.';
         }
         
-        if ($user->hasRole('SuperAdmin')) {
-            return 'User type does not support this feature.';
+        if (!$user->can('can-accept-invite')) {
+            return 'User is not authorized to accept invite.';
         }
         
         if ($user->companies()->where('companies.id', $company->id)->exists()) {
@@ -63,7 +76,7 @@ class InviteService
         } else {
             
             if (auth()->id() !== $user->id) {
-                return 'User is not authorized to accept this invite.';
+                return 'User is not authorized to accept invite.';
             }
             
         }
@@ -79,4 +92,3 @@ class InviteService
             ->get();
     }
 }
-    

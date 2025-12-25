@@ -25,8 +25,16 @@ class InviteController extends Controller
     
     public function create()
     {
-        $companies = Company::with('users')->orderBy('name')->get();
-        return view('invites.create', compact('companies'));
+        $user = auth()->user();
+        $can_see_all = $user->can('can-see-all-org');
+        if ($can_see_all) {
+            $companies = Company::with('users')->orderBy('name')->get();
+        } elseif ($user->can('can-see-self-org')) {
+            $companies = $user->companies()->with('users')->orderBy('name')->get();
+        } else {
+            $companies = collect();
+        }
+        return view('invites.create', compact('companies', 'can_see_all'));
     }
     
     public function store(Request $request)
@@ -42,10 +50,16 @@ class InviteController extends Controller
             return back()->withErrors($validator)->withInput();
         }
         
+        $validation = $this->service->validateSender(auth()->user(), $request->company_id);
+        
+        if ($validation) {
+            return back()->with('error', $validation);
+        }
+        
         $receiver = User::where('email', $request->email)->first();
         $company = $this->service->getCompany($request->company_id, $request->company_name);
         
-        $validation = $this->service->validateRequest($receiver, $company, true);
+        $validation = $this->service->validateReceiver($receiver, $company, true);
         
         if ($validation) {
             return back()->with('error', $validation);
@@ -64,12 +78,14 @@ class InviteController extends Controller
     
     public function index()
     {
-        return view('invites.index', [
-            'invites' => [
-                'received' => $this->service->getInvites('receiver_id'),
-                'sent' => $this->service->getInvites('sender_id')
-            ]
-        ]);
+        $invites = [
+            'received' => $this->service->getInvites('receiver_id'),
+            'sent' => $this->service->getInvites('sender_id')
+        ];
+        
+        $can_send_invite = auth()->user()->can('can-send-invite');
+        
+        return view('invites.index', compact('invites', 'can_send_invite'));
     }
     
     public function accept(Invite $invite)
@@ -77,7 +93,7 @@ class InviteController extends Controller
         $receiver = $invite->receiver;
         $company = $invite->company;
         
-        $validation = $this->service->validateRequest($receiver, $company, false);
+        $validation = $this->service->validateReceiver($receiver, $company, false);
         
         if ($validation) {
             return back()->with('error', $validation);
