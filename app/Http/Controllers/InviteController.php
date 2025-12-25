@@ -6,11 +6,16 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Invite;
 use App\Models\Company;
+use App\Services\InviteService;
 
 class InviteController extends Controller
 {
+    
+    protected $service;
+    
     public function __construct()
     {
+        $this->service = new InviteService();
         // Role-based middleware (commented for now)
         // $this->middleware('permission:can-send-invite')->only(['create', 'store']);
         // $this->middleware('permission:can-accept-invite')->only(['index', 'accept']);
@@ -83,21 +88,15 @@ class InviteController extends Controller
         
         return back()->with('success', 'Invite was sent.');
     }
-
-    // Show invites for the logged-in user (tab view)
+    
     public function index()
     {
-        $receivedInvites = Invite::with(['company', 'sender'])
-        ->where('receiver_id', auth()->id())
-        ->latest()
-        ->get();
-        
-        $sentInvites = Invite::with(['company', 'receiver'])
-        ->where('sender_id', auth()->id())
-        ->latest()
-        ->get();
-
-        return view('invites.index', compact('receivedInvites', 'sentInvites'));
+        return view('invites.index', [
+            'invites' => [
+                'received' => $this->service->getInvites('receiver_id'),
+                'sent' => $this->service->getInvites('sender_id')
+            ]
+        ]);
     }
 
     // Accept an invite and add user to the company

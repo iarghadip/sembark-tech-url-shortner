@@ -28,88 +28,68 @@
         </button>
     </div>
 
-    <!-- Received Invites -->
-    <div x-show="tab === 'received'">
-        @if($receivedInvites->isEmpty())
-            <p class="text-gray-600">No received invites.</p>
-        @else
-            <table class="w-full border border-collapse">
-                <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-2 border">User</th>
-                    <th class="p-2 border">Company</th>
-                    <th class="p-2 border">Date</th>
-                    <th class="p-2 border">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($receivedInvites as $invite)
-                    <!-- Main row -->
-                    <tr class="text-center">
-                        <td class="p-2 border">{{ $invite->sender->name }}</td>
-                        <td class="p-2 border">{{ $invite->company->name }}</td>
-                        <td class="p-2 border">{{ $invite->created_at->format('d/m/Y') }}</td>
-                        <td class="p-2 border">
-                            <form method="POST" action="{{ route('invites.accept', $invite) }}">
-                                @csrf
-                                <button class="bg-blue-600 text-white px-3 py-1 rounded">
-                                    Accept
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
+    @php
+        $tabs = [
+            'received' => [
+                'data' => $invites['received'],
+                'userColumn' => 'sender',
+                'actionColumn' => true
+            ],
+            'sent' => [
+                'data' => $invites['sent'],
+                'userColumn' => 'receiver',
+                'actionColumn' => false
+            ]
+        ];
+    @endphp
 
-                    <!-- Message row -->
-                    @if($invite->message)
-                        <tr class="bg-gray-50">
-                            <td colspan="4" class="p-2 border text-sm text-gray-700 text-left">
-                                {{ $invite->message }}
-                            </td>
+    @foreach($tabs as $key => $tabConfig)
+        <div x-show="tab === '{{ $key }}'">
+            @if($tabConfig['data']->isEmpty())
+                <p class="text-gray-600">No {{ $key }} invites.</p>
+            @else
+                <table class="w-full border border-collapse">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="p-2 border">User</th>
+                            <th class="p-2 border">Company</th>
+                            <th class="p-2 border">Date</th>
+                            <th class="p-2 border">{{ $tabConfig['actionColumn'] ? 'Action' : 'Status' }}</th>
                         </tr>
-                    @endif
-                @endforeach
-                </tbody>
-            </table>
-        @endif
-    </div>
+                    </thead>
+                    <tbody>
+                        @foreach($tabConfig['data'] as $invite)
+                            <tr class="text-center">
+                                <td class="p-2 border">{{ $invite->{$tabConfig['userColumn']}->name }}</td>
+                                <td class="p-2 border">{{ $invite->company->name }}</td>
+                                <td class="p-2 border">{{ $invite->created_at->format('d/m/Y') }}</td>
+                                <td class="p-2 border">
+                                    @if($tabConfig['actionColumn'])
+                                        <form method="POST" action="{{ route('invites.accept', $invite) }}">
+                                            @csrf
+                                            <button class="bg-blue-600 text-white px-3 py-1 rounded">
+                                                Accept
+                                            </button>
+                                        </form>
+                                    @else
+                                        Pending
+                                    @endif
+                                </td>
+                            </tr>
 
-    <!-- Sent Invites -->
-    <div x-show="tab === 'sent'">
-        @if($sentInvites->isEmpty())
-            <p class="text-gray-600">No sent invites.</p>
-        @else
-            <table class="w-full border border-collapse">
-                <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-2 border">User</th>
-                    <th class="p-2 border">Company</th>
-                    <th class="p-2 border">Date</th>
-                    <th class="p-2 border">Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($sentInvites as $invite)
-                    <!-- Main row -->
-                    <tr class="text-center">
-                        <td class="p-2 border">{{ $invite->receiver->name }}</td>
-                        <td class="p-2 border">{{ $invite->company->name }}</td>
-                        <td class="p-2 border">{{ $invite->created_at->format('d/m/Y') }}</td>
-                        <td class="p-2 border">Pending</td>
-                    </tr>
-
-                    <!-- Message row -->
-                    @if($invite->message)
-                        <tr class="bg-gray-50">
-                            <td colspan="4" class="p-2 border text-sm text-gray-700 text-left">
-                                {{ $invite->message }}
-                            </td>
-                        </tr>
-                    @endif
-                @endforeach
-                </tbody>
-            </table>
-        @endif
-    </div>
+                            @if($invite->message)
+                                <tr class="bg-gray-50">
+                                    <td colspan="4" class="p-2 border text-sm text-gray-700 text-left">
+                                        {{ $invite->message }}
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
+    @endforeach
 
 </div>
 @endsection
