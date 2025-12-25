@@ -33,9 +33,9 @@
                 @endforeach
                 <option value="new" data-user-count="0">+ Create New Company</option>
             </select>
-            <input type="text" name="new_company_name" id="new-company-name" class="w-full border p-2 rounded mt-2 hidden" placeholder="Enter new company name">
+            <input type="text" name="company_name" id="new-company-name" class="w-full border p-2 rounded mt-2 hidden" placeholder="Enter new company name">
             @error('company_id')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
-            @error('new_company_name')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
+            @error('company_name')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
         </div>
 
         <div class="mb-4">
