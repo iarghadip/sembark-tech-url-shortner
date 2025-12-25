@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Invite;
+use App\Models\Company;
 
 class User extends Authenticatable
 {
@@ -33,7 +35,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        'remember_token'
     ];
 
     /**
@@ -45,7 +47,23 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password' => 'hashed'
         ];
     }
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class);
+    }
+
+    public function sentInvites()
+    {
+        return $this->hasMany(Invite::class, 'sender_id');
+    }
+
+    public function receivedInvites()
+    {
+        return $this->hasMany(Invite::class, 'receiver_id');
+    }
+
 }

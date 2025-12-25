@@ -20,7 +20,8 @@ class RolePermissionSeeder extends Seeder
         // permissions list according to the requirement
 
         $permissions = [
-            'can-invite',
+            'can-send-invite',
+            'can-accept-invite',
             'can-short-url',
             'can-see-all-data',
             'can-see-com-data',
@@ -41,11 +42,25 @@ class RolePermissionSeeder extends Seeder
         $adminRole = Role::create(['name' => 'Admin']);
         $memberRole = Role::create(['name' => 'Member']);
 
-        $superAdminRole->givePermissionTo(['can-invite', 'can-see-all-data']);
+        $superAdminRole->givePermissionTo([
+            'can-send-invite',
+            'can-see-com-data',
+            'can-see-all-data'
+        ]);
 
-        $adminRole->givePermissionTo(['can-short-url', 'can-see-com-data', 'can-see-self-data']);
+        $adminRole->givePermissionTo([
+            'can-send-invite',
+            'can-accept-invite',
+            'can-short-url',
+            'can-see-com-data',
+            'can-see-self-data'
+        ]);
 
-        $memberRole->givePermissionTo(['can-short-url', 'can-see-self-data']);
+        $memberRole->givePermissionTo([
+            'can-accept-invite',
+            'can-short-url',
+            'can-see-self-data'
+        ]);
 
         $superAdmin = User::create([
             'name' => 'Super Admin',

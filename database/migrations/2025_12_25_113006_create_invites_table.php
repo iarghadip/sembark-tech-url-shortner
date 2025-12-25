@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('invites', function (Blueprint $table) {
             $table->id();
             $table->text('message')->nullable();
-
-            // i will use the updated_at timestamp to determine wheather the invite has expiered or not
-            // on invite can be accepted one time, then they will disappear
             $table->timestamps();
+
+            // invites will get deleted
 
             $table->foreignId('sender_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
         });
     }
 
