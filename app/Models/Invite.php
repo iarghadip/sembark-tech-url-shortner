@@ -12,10 +12,11 @@ class Invite extends Model
     use HasFactory;
 
     protected $fillable = [
+        'make_admin',
+        'message',
         'sender_id',
         'receiver_id',
-        'company_id',
-        'message'
+        'company_id'
     ];
 
     public function sender()

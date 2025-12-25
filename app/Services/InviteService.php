@@ -43,7 +43,7 @@ class InviteService
         }
         
         if ($user->hasRole('SuperAdmin')) {
-            return 'User does not have permission to use this feature.';
+            return 'User type does not support this feature.';
         }
         
         if ($user->companies()->where('companies.id', $company->id)->exists()) {
@@ -57,7 +57,7 @@ class InviteService
             }
             
             if (auth()->id() === $user->id) {
-                return 'User cannot send an invite to themselves.';
+                return 'User cannot send an invite to self.';
             }
             
         } else {

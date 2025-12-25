@@ -19,9 +19,6 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-
-            // i have created a new user migration and copy pasted all the code from original file.
-            // just added the foreignkey for company.
             
             $table->foreignId('company_id')->nullable()->constrained('companies');
         });

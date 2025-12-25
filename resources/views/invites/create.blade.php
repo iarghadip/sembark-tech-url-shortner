@@ -24,7 +24,7 @@
 
         <div class="mb-4">
             <label class="block mb-1">Company</label>
-            <select name="company_id" class="w-full border p-2 rounded mb-2" id="company-select">
+            <select name="company_id" class="w-full border p-2 rounded mb-2" id="company-id">
                 <option value="">-- Select Company --</option>
                 @foreach($companies as $company)
                     <option value="{{ $company->id }}" data-user-count="{{ $company->users->count() }}" {{ old('company_id') == $company->id ? 'selected' : '' }}>
@@ -33,7 +33,7 @@
                 @endforeach
                 <option value="new" data-user-count="0">+ Create New Company</option>
             </select>
-            <input type="text" name="company_name" id="new-company-name" class="w-full border p-2 rounded mt-2 hidden" placeholder="Enter new company name">
+            <input type="text" name="company_name" id="company-name" class="w-full border p-2 rounded mt-2 hidden" placeholder="Enter new company name">
             @error('company_id')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
             @error('company_name')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
         </div>
@@ -46,7 +46,8 @@
 
         <div class="mb-4">
             <label class="inline-flex items-center">
-                <input type="checkbox" name="make_admin" id="make-admin" checked disabled class="form-checkbox">
+                <input type="checkbox" name="make_admin" id="admin-checkbox" checked disabled class="form-checkbox">
+                <input type="hidden" name="make_admin" id="make-admin-hidden" value="1">
                 <span class="ml-2">Make user an admin</span>
             </label>
         </div>
@@ -56,11 +57,10 @@
         </button>
     </form>
 </div>
-
 <script>
-    const companySelect = document.getElementById('company-select');
-    const newCompanyInput = document.getElementById('new-company-name');
-    const makeAdminCheckbox = document.getElementById('make-admin');
+    const companySelect = document.getElementById('company-id');
+    const newCompanyInput = document.getElementById('company-name');
+    const makeAdminCheckbox = document.getElementById('admin-checkbox');
 
     function updateAdminCheckbox() {
         const selectedOption = companySelect.options[companySelect.selectedIndex];
@@ -69,9 +69,11 @@
         if (companySelect.value === 'new' || userCount === 0) {
             makeAdminCheckbox.checked = true;
             makeAdminCheckbox.disabled = true;
+            document.getElementById('make-admin-hidden').value = 1;
         } else {
             makeAdminCheckbox.checked = false;
             makeAdminCheckbox.disabled = false;
+            document.getElementById('make-admin-hidden').value = 0;
         }
     }
 
