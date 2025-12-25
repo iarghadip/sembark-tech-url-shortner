@@ -32,56 +32,72 @@ class InviteController extends Controller
             'message' => 'nullable|string|max:255',
             'new_company_name' => 'nullable|string|max:255',
         ]);
-
+        
         $receiver = User::where('email', $request->email)->first();
-
+        
         if (!$receiver) {
             return back()->with('error', 'User not found.');
         }
-
+        
         if ($receiver->id === auth()->id()) {
             return back()->with('error', 'You cannot send an invite to yourself.');
         }
-
+        
+        if ($receiver->hasRole('SuperAdmin')) {
+            return back()->with('error', 'You cannot send an invite to a SuperAdmin.');
+        }
+        
         $companyId = $request->company_id;
-
+        
         if ($companyId === 'new') {
-            // Check if a company with the same name already exists
             $existingCompany = Company::where('name', $request->new_company_name)->first();
             if ($existingCompany) {
                 return back()->with('error', 'A company with this name already exists.');
             }
-
-            // Create new company
+            
             $company = Company::create([
                 'name' => $request->new_company_name
             ]);
-
-            // Attach the sender to the new company
+            
             auth()->user()->companies()->attach($company->id);
             $companyId = $company->id;
         }
-
-        // Create the invite
+        
+        // Prevent duplicate invite or existing membership
+        if ($receiver->companies()->where('companies.id', $companyId)->exists()) {
+            return back()->with('error', 'User is already a member of this company.');
+        }
+        
+        if (Invite::where('receiver_id', $receiver->id)
+            ->where('company_id', $companyId)
+            ->exists()) {
+                return back()->with('error', 'User has already been invited to this company.');
+            }
+        
         Invite::create([
             'sender_id' => auth()->id(),
             'receiver_id' => $receiver->id,
             'company_id' => $companyId,
             'message' => $request->message,
         ]);
-
+        
         return back()->with('success', 'Invite was sent.');
     }
 
-    // Show invites for the logged-in user
+    // Show invites for the logged-in user (tab view)
     public function index()
     {
-        $invites = Invite::with('company', 'sender')
-            ->where('receiver_id', auth()->id())
-            ->latest()
-            ->get();
+        $receivedInvites = Invite::with(['company', 'sender'])
+        ->where('receiver_id', auth()->id())
+        ->latest()
+        ->get();
+        
+        $sentInvites = Invite::with(['company', 'receiver'])
+        ->where('sender_id', auth()->id())
+        ->latest()
+        ->get();
 
-        return view('invites.index', compact('invites'));
+        return view('invites.index', compact('receivedInvites', 'sentInvites'));
     }
 
     // Accept an invite and add user to the company
