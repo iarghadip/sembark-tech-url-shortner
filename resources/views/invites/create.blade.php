@@ -24,6 +24,7 @@
 
         <div class="mb-4">
             <label class="block mb-1">Company</label>
+            @if($can_see_all)
             <select name="company_id" class="w-full border p-2 rounded mb-2" id="company-id">
                 <option value="">-- Select Company --</option>
                 
@@ -35,10 +36,17 @@
                 </option>
                 @endforeach
                 
-                @if($can_see_all)
                 <option value="new" data-user-count="0">+ Create New Company</option>
-                @endif
             </select>
+            @else
+            <select class="w-full border p-2 rounded mb-2 bg-gray-100 cursor-not-allowed" disabled>
+                @foreach($companies as $company)
+                <option value="{{ $company->id }}" selected>{{ $company->name }}</option>
+                @endforeach
+            </select>
+            <input type="hidden" name="company_id" value="{{ $companies->first()->id ?? '' }}">
+            @endif
+            
             <input type="text" name="company_name" id="company-name" class="w-full border p-2 rounded mt-2 hidden" placeholder="Enter new company name">
             @error('company_id')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
             @error('company_name')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror

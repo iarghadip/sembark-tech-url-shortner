@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
@@ -25,15 +26,17 @@ class InviteController extends Controller
     
     public function create()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $can_see_all = $user->can('can-see-all-org');
+        
         if ($can_see_all) {
             $companies = Company::with('users')->orderBy('name')->get();
         } elseif ($user->can('can-see-self-org')) {
-            $companies = $user->companies()->with('users')->orderBy('name')->get();
+            $companies = collect($user->company ? [$user->company->load('users')] : []);
         } else {
             $companies = collect();
         }
+        
         return view('invites.create', compact('companies', 'can_see_all'));
     }
     
@@ -50,7 +53,7 @@ class InviteController extends Controller
             return back()->withErrors($validator)->withInput();
         }
         
-        $validation = $this->service->validateSender(auth()->user(), $request->company_id);
+        $validation = $this->service->validateSender(Auth::user(), $request->company_id);
         
         if ($validation) {
             return back()->with('error', $validation);
@@ -67,7 +70,7 @@ class InviteController extends Controller
 
         Invite::create([
             'make_admin' => $request->has('make_admin') && $request->make_admin,
-            'sender_id' => auth()->id(),
+            'sender_id' => Auth::id(),
             'receiver_id' => $receiver->id,
             'company_id' => $company->id,
             'message' => $request->message
@@ -83,7 +86,7 @@ class InviteController extends Controller
             'sent' => $this->service->getInvites('sender_id')
         ];
         
-        $can_send_invite = auth()->user()->can('can-send-invite');
+        $can_send_invite = Auth::user()->can('can-send-invite');
         
         return view('invites.index', compact('invites', 'can_send_invite'));
     }
@@ -99,8 +102,8 @@ class InviteController extends Controller
             return back()->with('error', $validation);
         }
 
-        if (!$receiver->companies->contains($company->id)) {
-            $receiver->companies()->attach($company->id);
+        if (!$receiver->company_id) {
+            $receiver->update(['company_id' => $company->id]);
         }
         
         if ($invite->make_admin) {
@@ -110,5 +113,18 @@ class InviteController extends Controller
         $invite->delete();
 
         return back()->with('success', 'Invite accepted and you have been added to the company.');
+    }
+    
+    public function destroy(Invite $invite)
+    {
+        $id = Auth::id();
+
+        if ($invite->sender_id !== $id && $invite->receiver_id !== $id) {
+            return back()->with('error', 'You are not authorized to delete this invite.');
+        }
+        
+        $invite->delete();
+        
+        return back()->with('success', 'Invite deleted successfully.');
     }
 }

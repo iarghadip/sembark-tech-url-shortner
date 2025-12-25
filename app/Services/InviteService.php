@@ -19,14 +19,7 @@ class InviteService
     public function getCompany($id, $name)
     {
         if ($id === 'new') {
-            
-            $company = Company::firstOrCreate(['name' => $name]);
-            
-            if (!auth()->user()->companies->contains($company->id)) {
-                auth()->user()->companies()->attach($company->id);
-            }
-            
-            return $company;
+            return Company::firstOrCreate(['name' => $name]);
         }
         
         return Company::find($id);
@@ -59,7 +52,7 @@ class InviteService
             return 'User is not authorized to accept invite.';
         }
         
-        if ($user->companies()->where('companies.id', $company->id)->exists()) {
+        if ($user->company_id === $company->id) {
             return 'User is already a member of this company.';
         }
         
