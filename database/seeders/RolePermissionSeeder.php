@@ -27,8 +27,12 @@ class RolePermissionSeeder extends Seeder
             'can-see-self-data',
         ];
 
+        // added the web guard
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'web',
+            ]);
         }
 
         // role and super admin account creation
@@ -46,7 +50,7 @@ class RolePermissionSeeder extends Seeder
         $superAdmin = User::create([
             'name' => 'Super Admin',
             'email' => 'super@sembark.com',
-            'password' => bcrypt('sembark@123'),
+            'password' => 'sembark@123',
         ]);
         
         $superAdmin->assignRole($superAdminRole);
