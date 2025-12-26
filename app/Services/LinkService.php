@@ -37,9 +37,11 @@ class LinkService
 
             return null;
             
+        } else {
+
+            return 'User is not authorized to use this feature.';
+            
         }
-        
-        return 'User is not authorized to use this feature.';
     }
     
 }
