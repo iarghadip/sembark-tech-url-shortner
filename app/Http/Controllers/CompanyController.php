@@ -45,6 +45,7 @@ class CompanyController extends Controller
     {
         $company->users()->update(['company_id' => null]);
         $company->delete();
+        
         return redirect()->route('company.index');
     }
     

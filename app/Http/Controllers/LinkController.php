@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 use App\Models\Link;
 
@@ -21,7 +22,7 @@ class LinkController extends Controller
 
     public function index()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         
         if ($user->can('can-see-all-url')) {
 
