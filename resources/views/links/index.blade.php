@@ -12,17 +12,7 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="mb-4 p-3 bg-green-100 text-green-700 rounded">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">
-            {{ session('error') }}
-        </div>
-    @endif
+    @include('ui.message')
 
     <table class="w-full border border-collapse text-center">
         <thead class="bg-gray-100">

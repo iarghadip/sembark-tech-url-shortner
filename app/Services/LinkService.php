@@ -17,6 +17,10 @@ class LinkService
     public static function validateUser(Link $link)
     {
         $user = auth()->user();
+
+        if ($user->can('can-see-all-url')) {
+            return null;
+        }
         
         if ($user->can('can-see-org-url')) {
             
