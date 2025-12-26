@@ -49,3 +49,12 @@ Use the following credentials to login as a Super Admin:
 
 - Email: super@sembark.com
 - Password: sembark@123
+
+---
+
+References
+
+- Spatie Permission Class Resolved: https://stackoverflow.com/a/78532053
+- Controller Class Setup: https://stackoverflow.com/a/79636097
+- Bootstrap/app.php Setup for Spatie: https://stackoverflow.com/a/78532490
+- Database Seeder Lookup: https://laravel.com/docs/12.x/seeding
