@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Link;
+
 use App\Services\LinkService;
 
 class LinkController extends Controller
@@ -23,13 +24,21 @@ class LinkController extends Controller
         $user = auth()->user();
         
         if ($user->can('can-see-all-url')) {
+
             $links = Link::latest()->get();
+
         } elseif ($user->can('can-see-org-url')) {
+
             $links = Link::where('company_id', $user->company_id)->latest()->get();
+
         } elseif ($user->can('can-see-self-url')) {
+
             $links = Link::where('user_id', $user->id)->latest()->get();
+
         } else {
+
             $links = collect();
+
         }
         
         return view('links.index', compact('links'));
@@ -60,22 +69,15 @@ class LinkController extends Controller
         } while (Link::where('slug', $slug)->exists());
         
         Link::create([
-            'source'     => $request->source,
-            'slug'       => $slug,
-            'clicks'     => 0,
+            'source' => $request->source,
+            'slug' => $slug,
+            'clicks' => 0,
             'desciption' => $request->desciption,
-            'user_id'    => auth()->id(),
+            'user_id' => auth()->id(),
             'company_id' => auth()->user()->company_id ?? null
         ]);
         
         return back()->with('success', 'Link was created.');
-    }
-
-    public function forward($slug)
-    {
-        $link = Link::where('slug', $slug)->firstOrFail();
-        $link->increment('clicks');
-        return redirect()->away($link->source);
     }
 
     public function edit(Link $link)
@@ -107,7 +109,7 @@ class LinkController extends Controller
         }
 
         $link->update([
-            'source'     => $request->source,
+            'source' => $request->source,
             'desciption' => $request->desciption
         ]);
 
@@ -125,5 +127,13 @@ class LinkController extends Controller
         $link->delete();
 
         return back()->with('success', 'Link deleted successfully.');
+    }
+
+    public function forward($slug)
+    {
+        $link = Link::where('slug', $slug)->firstOrFail();
+        $link->increment('clicks');
+
+        return redirect()->away($link->source);
     }
 }
