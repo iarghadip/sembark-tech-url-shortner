@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Invite;
 use App\Models\Company;
+use App\Models\Link;
 
 class User extends Authenticatable
 {
@@ -57,8 +58,12 @@ class User extends Authenticatable
             $user->assignRole('Member');
         });
     }
-
-
+    
+    public function links()
+    {
+        return $this->hasMany(Link::class);
+    }
+    
     public function company()
     {
         return $this->belongsTo(Company::class);
