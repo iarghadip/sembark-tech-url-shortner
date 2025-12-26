@@ -4,15 +4,6 @@
 <div class="max-w-2xl mx-auto mt-10 p-6 bg-white shadow rounded">
     <h2 class="text-xl font-bold mb-4">Send Invite</h2>
 
-    @if(session('success'))
-        <div class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>
-    @endif
-
-    @if(session('error'))
-        <p class="text-red-600 mt-1">{{ session('error') }}</p>
-    @endif
-
-
     <form action="{{ route('invites.store') }}" method="POST">
         @csrf
 

@@ -5,8 +5,6 @@
 
     <h2 class="text-xl font-bold mb-6">Create Short Link</h2>
 
-    @include('ui.message')
-
     <form action="{{ route('links.store') }}" method="POST">
         @csrf
 

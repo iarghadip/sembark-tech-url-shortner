@@ -12,8 +12,6 @@
         </a>
     </div>
 
-    @include('ui.message')
-
     <table class="w-full border border-collapse text-center">
         <thead class="bg-gray-100">
             <tr>

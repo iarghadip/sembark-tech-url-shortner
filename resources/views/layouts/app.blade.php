@@ -29,6 +29,7 @@
 
             <!-- Page Content -->
             <main>
+                @include('ui.message')
                 @yield('content')
             </main>
         </div>
