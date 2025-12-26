@@ -16,26 +16,27 @@ class LinkService
     
     public static function validateUser(Link $link)
     {
-        $user = auth()->user();
 
-        if ($user->can('can-see-all-url')) {
+        if (auth()->user()->can('can-see-all-url')) {
+
             return null;
-        }
-        
-        if ($user->can('can-see-org-url')) {
+
+        } else if (auth()->user()->can('can-see-org-url')) {
             
-            if ($link->company_id !== $user->company_id) {
+            if ($link->company_id !== auth()->user()->company_id) {
                 return 'User is not authorized to use this feature.';
             }
-            return null;
-        }
-        
-        if ($user->can('can-see-self-url')) {
 
-            if ($link->user_id !== $user->id) {
+            return null;
+
+        } else if (auth()->user()->can('can-see-self-url')) {
+
+            if ($link->user_id !== auth()->user()->id) {
                 return 'User is not authorized to use this feature.';
             }
+
             return null;
+            
         }
         
         return 'User is not authorized to use this feature.';
