@@ -1,5 +1,11 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
+# Note
+
+- Every user (Admin, Member) except SuperAdmin must register themselves first from their end, then those accounts can be invited to a Company by SuperAdmin and Admin.
+- If company does not have any user aka new company created by SuperAdmin, the first user will be Admin as shown by the checkbox.
+- If a company has atleast one member then SuperAdmin or Admin can choose wheather the invited member will gain Admin priviliages or not by checking the checkbox.
+
 # Project Setup Guide
 
 **1. Create Environment File**
