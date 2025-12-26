@@ -8,35 +8,35 @@ Copy the example environment file to create your own `.env`:
 
 	cp .env.example .env
 
-**2. Generate Application Key**
-
-Generate the Laravel app key:
-
-	php artisan key:generate
-
-**3. Run Migrations and Seed Data**
-
-Create the database tables and seed initial data:
-
-	php artisan migrate --seed
-
-**4. Install PHP Dependencies**
+**2. Install PHP Dependencies**
 
 Install project dependencies via Composer:
 
 	composer install
 
-**5. Install Node Dependencies**
+**3. Install Node Dependencies**
 
 Install frontend dependencies:
 
 	npm install
 
-**6. Build Assets**
+**4. Build Assets**
 
 Build the frontend assets using Vite:
 
 	npm run build
+
+**5. Generate Application Key**
+
+Generate the Laravel app key:
+
+	php artisan key:generate
+
+**6. Run Migrations and Seed Data**
+
+Create the database tables and seed initial data:
+
+	php artisan migrate --seed
 
 **7. Login Credentials**
 
