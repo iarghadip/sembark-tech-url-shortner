@@ -22,7 +22,15 @@
             </div>
 
             <div class="flex gap-2">
-                @if(auth()->user()->roles->pluck('name')->first() === 'Admin')
+                
+                @if(auth()->user()->can('can-send-invite') && (auth()->user()->company || auth()->user()->hasRole('SuperAdmin')))
+                <a href="{{ route('invites.create') }}"
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                    Invite
+                </a>
+                @endif
+                
+                @if(auth()->user()->hasRole('Admin'))
                     <a href="{{ route('company.edit', $company) }}"
                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
                         Edit
@@ -39,7 +47,7 @@
                     </button>
                 </form>
 
-                @if(auth()->user()->roles->pluck('name')->first() === 'Admin')
+                @if(auth()->user()->hasRole('Admin'))
                     <form action="{{ route('company.destroy', $company) }}" method="POST">
                         @csrf
                         @method('DELETE')

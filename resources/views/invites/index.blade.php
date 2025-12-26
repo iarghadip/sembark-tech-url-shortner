@@ -7,7 +7,7 @@
         <h2 class="text-xl font-bold">Your Invites</h2>
         @if($can_send_invite && (auth()->user()->company || auth()->user()->hasRole('SuperAdmin')))
             <a href="{{ route('invites.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
                 Create Invite
             </a>
         @endif
