@@ -45,8 +45,8 @@ class InviteController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'company_id' => 'required',
-            'company_name' => 'nullable|string|max:255',
-            'message' => 'nullable|string|max:255'
+            'company_name' => 'required|string|max:100',
+            'message' => 'nullable|string|max:300'
         ]);
         
         if ($validator->fails()) {

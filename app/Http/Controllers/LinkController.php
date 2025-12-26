@@ -58,7 +58,7 @@ class LinkController extends Controller
         
         $validator = Validator::make($request->all(), [
             'source' => 'required|url',
-            'desciption' => 'nullable|string'
+            'desciption' => 'nullable|string|max:300'
         ]);
         
         if ($validator->fails()) {
@@ -102,7 +102,7 @@ class LinkController extends Controller
 
         $validator = Validator::make($request->all(), [
             'source' => 'required|url',
-            'desciption' => 'nullable|string'
+            'desciption' => 'nullable|string|max:300'
         ]);
 
         if ($validator->fails()) {

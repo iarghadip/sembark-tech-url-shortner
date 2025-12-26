@@ -28,8 +28,8 @@ class CompanyController extends Controller
     public function update(Request $request, Company $company)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'address' => 'nullable|string',
+            'name' => 'required|string|max:100',
+            'address' => 'nullable|string|max:300',
         ]);
         
         if ($validator->fails()) {
@@ -45,7 +45,7 @@ class CompanyController extends Controller
     {
         $company->users()->update(['company_id' => null]);
         $company->delete();
-        
+
         return redirect()->route('company.index');
     }
     
