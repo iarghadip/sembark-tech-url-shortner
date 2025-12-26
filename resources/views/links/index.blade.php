@@ -41,7 +41,7 @@
                     <td class="p-2 border">{{ $link->clicks }}</td>
                     <td class="p-2 border">{{ $link->user->email ?? 'N/A' }}</td>
                     <td class="p-2 border">{{ $link->company->name ?? 'N/A' }}</td>
-                    <td class="p-2 border flex justify-center gap-2">
+                    <td class="p-2 flex justify-center gap-2">
                         <a href="{{ route('links.edit', $link) }}"
                            class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">
                             Edit
