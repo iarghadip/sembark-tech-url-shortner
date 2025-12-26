@@ -33,7 +33,11 @@
                             {{ url('forward/' . $link->slug) }}
                         </a>
                     </td>
-                    <td class="p-2 border text-left">{{ $link->source }}</td>
+                    <td class="p-2 border text-blue-600">
+                        <a href="{{ $link->source }}" target="_blank">
+                            {{ $link->source }}
+                        </a>
+                    </td>
                     <td class="p-2 border">{{ $link->clicks }}</td>
                     <td class="p-2 border">{{ $link->user->email ?? 'N/A' }}</td>
                     <td class="p-2 border">{{ $link->company->name ?? 'N/A' }}</td>
