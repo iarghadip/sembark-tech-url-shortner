@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invites', function (Blueprint $table) {
+        Schema::create('links', function (Blueprint $table) {
             $table->id();
-            $table->boolean('make_admin')->default(false);
-            $table->text('message')->nullable();
+            $table->text('source');
+            $table->string('slug', 5)->unique();
+            $table->unsignedBigInteger('clicks')->default(0);
+            $table->text('desciption')->nullable();
             $table->timestamps();
             
-            $table->foreignId('sender_id')->nullable()->constrained('users')->cascadeOnDelete();
-            $table->foreignId('receiver_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('company_id')->nullable()->constrained('companies')->cascadeOnDelete();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('invites');
+        Schema::dropIfExists('links');
     }
 };

@@ -5,20 +5,18 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\LinkController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+//Route::get('/links', function () {
+//  return view('links');
+//})->middleware(['auth', 'verified'])->name('links');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+Route::middleware(['auth', 'verified'])->group(function () {
+    
     Route::prefix('invites')->name('invites.')->group(function () {
         Route::get('/', [InviteController::class, 'index'])->name('index');
         Route::post('/accept/{invite}', [InviteController::class, 'accept'])->name('accept');
@@ -35,11 +33,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/remove/{company}/{user}', [CompanyController::class, 'remove'])->name('remove');
     });
     
-    Route::resource('company', CompanyController::class);
-    Route::post('company/{company}/leave', [CompanyController::class, 'leave'])->name('company.leave');
-    Route::delete('/company/{company}/user/{user}', [CompanyController::class, 'removeUser'])
-        ->name('company.user.destroy')
-        ->middleware('permission:can-see-self-org');
+    Route::prefix('links')->name('links.')->group(function () {
+        Route::get('/', [LinkController::class, 'index'])->name('index');
+        Route::get('/create', [LinkController::class, 'create'])->name('create');
+        Route::post('/store', [LinkController::class, 'store'])->name('store');
+        Route::get('/edit/{link}', [LinkController::class, 'edit'])->name('edit');
+        Route::put('/update/{link}', [LinkController::class, 'update'])->name('update');
+        Route::delete('/destroy/{link}', [LinkController::class, 'destroy'])->name('destroy');
+    });
+    
+    Route::get('/forward/{slug}', [LinkController::class, 'forward'])->name('links.forward');
 
 });
     

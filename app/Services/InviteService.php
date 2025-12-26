@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Invite;
-use App\Models\User;
 use App\Models\Company;
 
 class InviteService

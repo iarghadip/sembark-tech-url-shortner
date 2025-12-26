@@ -26,6 +26,7 @@ class RolePermissionSeeder extends Seeder
             'can-see-all-org',
             'can-see-self-org',
             'can-see-all-url',
+            'can-see-org-url',
             'can-see-self-url'
         ];
 
@@ -54,7 +55,7 @@ class RolePermissionSeeder extends Seeder
             'can-accept-invite',
             'can-short-url',
             'can-see-self-org',
-            'can-see-self-url'
+            'can-see-org-url'
         ]);
 
         $memberRole->givePermissionTo([

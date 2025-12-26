@@ -17,7 +17,7 @@
         @csrf
 
         <div class="mb-4">
-            <label class="block mb-1">Receiver Email</label>
+            <label class="block mb-1">Receiver Email *</label>
             <input type="email" name="email" class="w-full border p-2 rounded" value="{{ old('email') }}" required>
             @error('email')<p class="text-red-600 mt-1">{{ $message }}</p>@enderror
         </div>
@@ -74,32 +74,54 @@
 <script>
     const companySelect = document.getElementById('company-id');
     const newCompanyInput = document.getElementById('company-name');
-    const makeAdminCheckbox = document.getElementById('admin-checkbox');
-
-    function updateAdminCheckbox() {
-        const selectedOption = companySelect.options[companySelect.selectedIndex];
-        const userCount = parseInt(selectedOption.dataset.userCount) || 0;
-
-        if (companySelect.value === 'new' || userCount === 0) {
-            makeAdminCheckbox.checked = true;
-            makeAdminCheckbox.disabled = true;
-            document.getElementById('make-admin-hidden').value = 1;
-        } else {
-            makeAdminCheckbox.checked = false;
-            makeAdminCheckbox.disabled = false;
-            document.getElementById('make-admin-hidden').value = 0;
-        }
+    const adminCheckbox = document.getElementById('admin-checkbox');
+    const adminHidden = document.getElementById('make-admin-hidden');
+    
+    const lockedCompanyUserCount = {{ 
+        ($companies->first() && $companies->first()->users ? $companies->first()->users->count() : 0)
+    }};
+    
+    function syncAdminValue() {
+        adminHidden.value = adminCheckbox.checked ? 1 : 0;
     }
-
-    companySelect.addEventListener('change', function () {
-        if (this.value === 'new') {
-            newCompanyInput.classList.remove('hidden');
+    
+    function updateAdminCheckbox() {
+        let userCount = 0;
+        let isNewCompany = false;
+        
+        if (companySelect) {
+            const option = companySelect.options[companySelect.selectedIndex];
+            userCount = parseInt(option.dataset.userCount || 0);
+            isNewCompany = companySelect.value === 'new';
         } else {
-            newCompanyInput.classList.add('hidden');
+            userCount = lockedCompanyUserCount;
         }
-        updateAdminCheckbox();
-    });
-
+        
+        if (isNewCompany || userCount === 0) {
+            adminCheckbox.checked = true;
+            adminCheckbox.disabled = true;
+        } else {
+            adminCheckbox.disabled = false;
+            adminCheckbox.checked = false;
+        }
+        
+        syncAdminValue();
+    }
+    
+    if (companySelect) {
+        companySelect.addEventListener('change', function () {
+            if (this.value === 'new') {
+                newCompanyInput.classList.remove('hidden');
+            } else {
+                newCompanyInput.classList.add('hidden');
+            }
+            updateAdminCheckbox();
+        });
+    }
+    
+    adminCheckbox.addEventListener('change', syncAdminValue);
+    
     updateAdminCheckbox();
 </script>
+
 @endsection
