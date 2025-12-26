@@ -11,10 +11,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//Route::get('/links', function () {
-//  return view('links');
-//})->middleware(['auth', 'verified'])->name('links');
-
 Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::prefix('invites')->name('invites.')->group(function () {
